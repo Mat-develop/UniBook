@@ -1,24 +1,58 @@
-import React from "react";
-import { Card } from "antd";
-import styles from "./feed.module.scss";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import PostContainer from "../PostContainer";
+
+interface Post {
+  id: string;
+  title: string;
+  body: string;
+  community: string;
+  img?: string;
+  likes: number;
+  comments: number;
+}
 
 const Feed: React.FC = () => {
-  return (
-    <div className={styles.feed}>
-      <Card className={styles.post}>
-        <h3>Post Title 1</h3>
-        <p>Post content goes here...</p>
-      </Card>
-      <Card className={styles.post}>
-        <h3>Post Title 2</h3>
-        <p>Another post content...</p>
-      </Card>
-      <Card className={styles.post}>
-        <h3>Post Title 3</h3>
-        <p>Yet another post content...</p>
-      </Card>
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/post/c/1`);
+        setPosts(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError('Failed to fetch posts');
+        setLoading(false);
+        console.error('Error fetching posts:', err);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+  
+
+ return (
+    <div>
+      {posts.map((post) => (
+        <PostContainer
+          key={post.id}
+          title={post.title}
+          body={post.body}
+          community={post.community}
+          img={post.img}
+          likes={post.likes}
+          comments={post.comments}
+        />
+      ))}
     </div>
   );
 };
+
 
 export default Feed;

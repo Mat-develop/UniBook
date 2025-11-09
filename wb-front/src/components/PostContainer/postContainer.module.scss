@@ -1,0 +1,39 @@
+.post {
+  width: 100%;
+  margin-bottom: 16px;
+  border-radius: 4px;
+  
+  .header {
+    margin-bottom: 16px;
+
+    h3 {
+      margin: 8px 0 0 0;
+    }
+  }
+
+  .content {
+    margin-bottom: 16px;
+
+    .imageContainer {
+      margin: 16px 0;
+      
+      img {
+        max-width: 100%;
+        border-radius: 4px;
+      }
+    }
+  }
+
+  .footer {
+    border-top: 1px solid #f0f0f0;
+    padding-top: 16px;
+    
+    button {
+      color: #666;
+      
+      &:hover {
+        color: #1890ff;
+      }
+    }
+  }
+}

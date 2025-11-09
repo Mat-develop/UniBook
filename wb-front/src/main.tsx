@@ -3,10 +3,12 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import './index.css';
-import Login from './pages/Login/Home';
+import Login from './pages/Login/Login';
 import { ToastContainer } from 'react-toastify';
 import Register from './pages/Login/Register';
-import MainContent from './components/Layout/Layout';
+import MainLayout from './components/Layout/Layout';
+import Feed from './components/Feed/Feed';
+
 
 
 function App() {
@@ -15,7 +17,13 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/home" element={<MainContent/>}/>
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Feed />} />
+          <Route path="home" element={<Feed />} />
+          <Route path="communities" element={<Feed />} />
+          <Route path="popular" element={<Feed />} />
+          <Route path="new" element={<Feed />} />
+        </Route>
       </Routes>
       <ToastContainer
         position="top-center"
