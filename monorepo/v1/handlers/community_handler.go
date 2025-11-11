@@ -52,8 +52,17 @@ func (c *communityHandler) CreateCommunity(w http.ResponseWriter, r *http.Reques
 
 func (c *communityHandler) GetCommunityByID(w http.ResponseWriter, r *http.Request) {}
 
-func (c *communityHandler) GetCommunityByName(w http.ResponseWriter, r *http.Request)    {}
-func (c *communityHandler) ListCommunities(w http.ResponseWriter, r *http.Request)       {}
+func (c *communityHandler) GetCommunityByName(w http.ResponseWriter, r *http.Request) {}
+func (c *communityHandler) ListCommunities(w http.ResponseWriter, r *http.Request) {
+	communities, err := c.service.ListCommunities()
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, communities)
+}
+
 func (c *communityHandler) DeleteCommunity(w http.ResponseWriter, r *http.Request)       {}
 func (c *communityHandler) FollowCommunity(w http.ResponseWriter, r *http.Request)       {}
 func (c *communityHandler) GetCommunityFollowers(w http.ResponseWriter, r *http.Request) {}
