@@ -8,6 +8,7 @@ import { ToastContainer } from 'react-toastify';
 import Register from './pages/Login/Register';
 import MainLayout from './components/Layout/Layout';
 import Feed from './components/Feed/Feed';
+import CommunityFeed from './components/Communities';
 
 
 
@@ -20,7 +21,7 @@ function App() {
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Feed />} />
           <Route path="home" element={<Feed />} />
-          <Route path="communities" element={<Feed />} />
+          <Route path="communities" element={<CommunityFeed />} />
           <Route path="popular" element={<Feed />} />
           <Route path="new" element={<Feed />} />
         </Route>

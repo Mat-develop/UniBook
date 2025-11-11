@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-
+import CommunityContainer from "../CommunityContainer";
+import styles from './communities.module.scss';
 interface Community {
   id: number;
   name: string;
@@ -8,7 +9,7 @@ interface Community {
   img?: string;
 }
 
-const Feed: React.FC = () => {
+const CommunityFeed: React.FC = () => {
   const [community, setCommunity] = useState<Community[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -16,7 +17,7 @@ const Feed: React.FC = () => {
   useEffect(() => {
     const fetchCommunities = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/post/c/1`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/c/all`);
         setCommunity(response.data);
         setLoading(false);
       } catch (err) {
@@ -32,15 +33,16 @@ const Feed: React.FC = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
   
-  // TODO: CREATE COMMUNITY CONTAINER
+  // TODO: CREATE COMMUNITY MEMBERS COUNT
  return (
-    <div>
+    <div className={styles.communitiesPage}>
       {community.map((comu) => (
         <CommunityContainer
-          key={comu.id}
-          title={comu.name}
-          body={comu.description}
+          id={comu.id}
+          name={comu.name}
+          about={comu.description}
           img={comu.img}
+          members={0}
         />
       ))}
     </div>
@@ -48,4 +50,4 @@ const Feed: React.FC = () => {
 };
 
 
-export default Feed;
+export default CommunityFeed;
