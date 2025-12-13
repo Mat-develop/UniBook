@@ -8,7 +8,7 @@ import (
 
 type PostService interface {
 	GetFeed(accontId uint64) ([]model.Post, error)
-	GetPost(accountId uint64, communityId uint64) ([]model.Post, error)
+	GetPosts(accountId uint64, communityId uint64) ([]model.Post, error)
 	GetPostByName() []model.Post
 	CreatePost(userId uint64, postBody model.PostDTO) error
 	UpdatePost(postID uint64, userID uint64, postBody model.PostDTO) error
@@ -23,7 +23,7 @@ func NewPostService(postRepository repository.PostRepository) PostService {
 	return &postService{postRepository: postRepository}
 }
 
-func (p *postService) GetPost(accountId uint64, communityId uint64) ([]model.Post, error) {
+func (p *postService) GetPosts(accountId uint64, communityId uint64) ([]model.Post, error) {
 	if accountId != 0 {
 		posts, err := p.postRepository.FindUserPosts(accountId)
 		if err != nil {

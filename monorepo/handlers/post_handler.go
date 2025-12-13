@@ -38,7 +38,7 @@ func (p *postHandler) GetCommunityPosts(w http.ResponseWriter, r *http.Request) 
 		response.Erro(w, http.StatusBadRequest, err)
 	}
 
-	posts, err := p.service.GetPost(0, communityId)
+	posts, err := p.service.GetPosts(0, communityId)
 	if err != nil {
 		response.Erro(w, http.StatusBadRequest, err)
 	}
@@ -54,7 +54,7 @@ func (p *postHandler) GetUserPosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts, err := p.service.GetPost(userId, 0)
+	posts, err := p.service.GetPosts(userId, 0)
 	if err != nil {
 		response.Erro(w, http.StatusBadRequest, err)
 		return

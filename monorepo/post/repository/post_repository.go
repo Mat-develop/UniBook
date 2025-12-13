@@ -9,35 +9,44 @@ import (
 
 const (
 	CreateQuery            = "INSERT INTO posts (title, body, community_id, user_id) VALUES (?, ?, ?, ?)"
-	FindByCommunityIdQuery = "SELECT p.id, p.user_id, p.community_id, p.title, p.body, IFNULL(p.image_url,''), IFNULL(p.likes,0), p.created_at, u.nick FROM posts p INNER JOIN users u ON u.id = p.user_id WHERE p.community_id = ?"
-	FindByUserIdQuery      = "SELECT p.id, p.user_id, p.community_id, p.title, p.body, IFNULL(p.image_url,''), IFNULL(p.likes,0), p.created_at, u.nick FROM posts p INNER JOIN users u ON u.id = p.user_id WHERE p.user_id = ?"
-	UpdateQuery            = "UPDATE posts SET title = ?, body = ? WHERE id = ? AND user_id = ?"
-	DeleteQuery            = "DELETE FROM posts WHERE id = ? AND user_id = ?"
+	FindByCommunityIdQuery = `
+	SELECT 
+		p.id, 
+		p.user_id, 
+		p.community_id, 
+		c.name as communityName,
+		p.title, 
+		p.body, 
+		IFNULL(p.image_url,''), 
+		IFNULL(p.likes,0), 
+		p.created_at, 
+		u.nick 
+	FROM posts p 
+	INNER JOIN users u ON u.id = p.user_id 
+	INNER JOIN community c on c.id = p.community_id
+	WHERE p.community_id = ?`
+
+	FindByUserIdQuery = `
+	SELECT 
+		p.id, 
+		p.user_id, 
+		p.community_id, 
+		c.name as communityName,
+		p.title, 
+		p.body, 
+		IFNULL(p.image_url,''), 
+		IFNULL(p.likes,0), 
+		p.created_at, 
+		u.nick 
+	FROM posts p 
+	INNER JOIN users u ON u.id = p.user_id 
+	INNER JOIN community c on c.id = p.community_id
+	WHERE p.user_id = ?`
+
+	UpdateQuery = "UPDATE posts SET title = ?, body = ? WHERE id = ? AND user_id = ?"
+	DeleteQuery = "DELETE FROM posts WHERE id = ? AND user_id = ?"
 )
 
-/*
-	-- TABLE CREATION SO I REMEMBER ---
-
-CREATE TABLE post(
-
-	    id uuid not null,
-	    title varchar(50) not null,
-	    body varchar(300) not null,
-
-	    user_id uuid not null,
-	    foreign key (user_id)
-	    references users(id)
-		ON DELETE CASCADE,
-
-	    community_id uuid,
-	    foreign key (community_id)
-	    references communities(id)
-	    ON DELETE CASCADE,
-
-	    likes int default,
-	    created_at timestamp default current_timestamp()
-	    )
-*/
 type PostRepository interface {
 	FindCommunityPosts(communityId uint64) ([]model.Post, error)
 	FindUserPosts(userId uint64) ([]model.Post, error)
@@ -59,29 +68,32 @@ func (p *postRepository) scanPosts(rows *sql.Rows) ([]model.Post, error) {
 	posts := []model.Post{}
 	for rows.Next() {
 		var (
-			id        int64
-			userId    int64
-			community sql.NullInt64
-			title     string
-			body      string
-			imageURL  string
-			likes     int64
-			createdAt time.Time
-			userNick  string
+			id            int64
+			userId        int64
+			community     sql.NullInt64
+			communityName string
+			title         string
+			body          string
+			imageURL      string
+			likes         int64
+			createdAt     time.Time
+			userNick      string
 		)
-		if err := rows.Scan(&id, &userId, &community, &title, &body, &imageURL, &likes, &createdAt, &userNick); err != nil {
+		if err := rows.Scan(&id, &userId, &community, &communityName, &title, &body, &imageURL, &likes, &createdAt, &userNick); err != nil {
 			return nil, err
 		}
 
 		post := model.Post{
-			ID:          uint64(id),
-			CommunityId: int32(0),
-			UserId:      uint64(userId),
-			UserNick:    userNick,
-			Title:       title,
-			Body:        body,
-			Likes:       int32(likes),
-			CreatedAt:   createdAt,
+			ID:            uint64(id),
+			CommunityId:   int32(0),
+			CommunityName: communityName,
+			UserId:        uint64(userId),
+			UserNick:      userNick,
+			Title:         title,
+			Body:          body,
+			ImageUrl:      imageURL,
+			Likes:         int32(likes),
+			CreatedAt:     createdAt,
 		}
 		if community.Valid {
 			post.CommunityId = int32(community.Int64)

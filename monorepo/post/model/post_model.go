@@ -7,14 +7,16 @@ import (
 )
 
 type Post struct {
-	ID          uint64    `json:"id,omitempty"`
-	CommunityId int32     `json:"community"`
-	UserId      uint64    `json:"UserId,omitempty"`
-	UserNick    string    `json:"userNick,omitempty"`
-	Title       string    `json:"title,omitempty"`
-	Body        string    `json:"body,omitempty"`
-	Likes       int32     `json:"likes"`
-	CreatedAt   time.Time `json:"createdAt"`
+	ID            uint64    `json:"id,omitempty"`
+	CommunityId   int32     `json:"communityId"`
+	CommunityName string    `json:"communityName"`
+	UserId        uint64    `json:"UserId,omitempty"`
+	UserNick      string    `json:"userNick,omitempty"`
+	Title         string    `json:"title,omitempty"`
+	Body          string    `json:"body,omitempty"`
+	ImageUrl      string    `json:"imageUrl,omitempty"`
+	Likes         int32     `json:"likes"`
+	CreatedAt     time.Time `json:"createdAt"`
 }
 
 type PostDTO struct {
