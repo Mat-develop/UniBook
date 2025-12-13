@@ -6,8 +6,8 @@ interface Post {
   id: string;
   title: string;
   body: string;
-  community: string;
-  img?: string;
+  communityName: string;
+  imageUrl?: string;
   likes: number;
   comments: number;
 }
@@ -44,8 +44,8 @@ const Feed: React.FC = () => {
           key={post.id}
           title={post.title}
           body={post.body}
-          community={post.community}
-          img={post.img}
+          community={post.communityName}
+          img={post.imageUrl}
           likes={post.likes}
           comments={post.comments}
         />

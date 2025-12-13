@@ -10,7 +10,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/" element={<MainLayout />}>
+        <Route path="/home" element={<MainLayout />}>
           <Route index element={<Feed />} />
           <Route path="popular" element={<Feed />} />
           <Route path="new" element={<Feed />} />
