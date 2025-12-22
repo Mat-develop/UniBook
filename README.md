@@ -2,7 +2,7 @@
 
 UniBook is a compact social-platform prototype (REST API + SPA) implemented as a Go monorepo backend and a React + TypeScript frontend. This repo contains the backend services, routing and middleware, authentication, migrations, and a Vite-powered frontend.
 
-**Quick Pitch**: Built and maintained as a trainee project — implemented core backend services, JWT auth, DB integration, and a polished TypeScript React frontend. Great examples of full-stack engineering fundamentals to present in interviews.
+**Quick Pitch**: Built and maintained — implemented core backend services, JWT auth, DB integration, and a polished TypeScript React frontend.
 
 **Highlights**
 - **Language & Frameworks:** Go (net/http style services), React + TypeScript, Vite
