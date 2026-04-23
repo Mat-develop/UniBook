@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, Image, Button, Space, Typography } from 'antd';
-import { LikeOutlined, CommentOutlined, ShareAltOutlined, HeatMapOutlined, BlockOutlined, BookOutlined } from '@ant-design/icons';
+import { BookOutlined, BlockOutlined, TeamOutlined, UserAddOutlined, UserDeleteOutlined } from '@ant-design/icons';
+import { toast } from 'react-toastify';
+import { followCommunity, unfollowCommunity } from '../../utils/api';
 import styles from './communityContainer.module.scss';
 
-interface PostProps {
+interface CommunityProps {
   id: number;
   name: string;
   about: string;
@@ -11,18 +13,34 @@ interface PostProps {
   members: number;
 }
 
-const CommunityContainer: React.FC<PostProps> = ({ 
-  id,
-  name, 
-  about, 
-  img, 
-  members = 0,
-}) => {
-    
+const CommunityContainer: React.FC<CommunityProps> = ({ id, name, about, img, members = 0 }) => {
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [memberCount, setMemberCount] = useState(members);
+  const [loading, setLoading] = useState(false);
+
+  const handleFollowToggle = async () => {
+    setLoading(true);
+    try {
+      if (isFollowing) {
+        await unfollowCommunity(id);
+        setIsFollowing(false);
+        setMemberCount((c) => c - 1);
+      } else {
+        await followCommunity(id);
+        setIsFollowing(true);
+        setMemberCount((c) => c + 1);
+      }
+    } catch {
+      toast.error(`Failed to ${isFollowing ? 'leave' : 'join'} community`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Card className={styles.communityContainer}>
       <div className={styles.header}>
-          {img && (
+        {img && (
           <div className={styles.imageContainer}>
             <Image src={img} alt={name} />
           </div>
@@ -36,13 +54,18 @@ const CommunityContainer: React.FC<PostProps> = ({
 
       <div className={styles.footer}>
         <Space>
-          <Button icon={<HeatMapOutlined />}>
-            Join
+          <Button
+            icon={isFollowing ? <UserDeleteOutlined /> : <UserAddOutlined />}
+            type={isFollowing ? 'default' : 'primary'}
+            loading={loading}
+            onClick={handleFollowToggle}
+          >
+            {isFollowing ? 'Leave' : 'Join'}
           </Button>
-          <Button icon={<BookOutlined />}>
-            {members} members
+          <Button icon={<TeamOutlined />}>
+            {memberCount} members
           </Button>
-          <Button icon={<BlockOutlined /> }>
+          <Button icon={<BlockOutlined />}>
             Share
           </Button>
         </Space>

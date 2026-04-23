@@ -2,8 +2,8 @@ package routes
 
 import (
 	"net/http"
-	"v1/handlers"
 	m "v1/util/middleware"
+	"v1/v1/handlers"
 
 	"github.com/gorilla/mux"
 )

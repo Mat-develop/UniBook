@@ -2,18 +2,16 @@ package routes
 
 import (
 	"net/http"
-	"v1/handlers"
+	"v1/v1/handlers"
 )
 
 const (
-	Post      = "/post"
-	Community = Post + "/c"
-
-	PostById      = Post + "/{id}"
-	PostByUserId  = Post + "/{userId}"
-	CommunityPost = Community + "/{communityId}"
-	PostByName    = Post + "/{PostId}"
-	PostByTitle   = Post + "/{title}"
+	Post          = "/post"
+	PostById      = "/post/{id}"
+	PostByUserId  = "/post/{userId}"
+	CommunityPost = "/post/c/{communityId}"
+	PostByName    = "/post/{PostId}"
+	PostByTitle   = "/post/{title}"
 )
 
 // dps faço o restante

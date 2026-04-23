@@ -2,7 +2,7 @@ package routes
 
 import (
 	"net/http"
-	"v1/handlers"
+	"v1/v1/handlers"
 )
 
 var routeLogin = Route{

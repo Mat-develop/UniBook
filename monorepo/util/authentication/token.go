@@ -29,7 +29,6 @@ func ValidateToken(r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(token)
 
 	if _, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		return nil

@@ -2,7 +2,7 @@ package routes
 
 import (
 	"net/http"
-	"v1/handlers"
+	"v1/v1/handlers"
 )
 
 const (
@@ -11,6 +11,7 @@ const (
 	UriFollowByID     = User + "/{userId}/follow"
 	UriUnfollowByID   = User + "/{userId}/unfollow"
 	UriFollowers      = User + "/{userId}/followers"
+	UriFollowing      = User + "/{userId}/following"
 	UriUpdatePassword = User + "/{userId}/update-password"
 )
 
@@ -56,6 +57,12 @@ func GetUserRoutes(h handlers.UserHandler) []Route {
 			URI:         UriFollowers,
 			Method:      http.MethodGet,
 			Function:    h.Followers,
+			RequireAuth: true,
+		},
+		{
+			URI:         UriFollowing,
+			Method:      http.MethodGet,
+			Function:    h.Following,
 			RequireAuth: true,
 		},
 		{

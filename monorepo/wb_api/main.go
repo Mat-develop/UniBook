@@ -4,17 +4,17 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"v1/handlers"
-	postRepo "v1/post/repository"
-	postServ "v1/post/service"
-
 	commuRepo "v1/community/repository"
 	commuServ "v1/community/service"
+
+	postRepo "v1/post/repository"
+	postServ "v1/post/service"
 	"v1/users/repository"
 	"v1/users/service"
 	util "v1/util/cors"
 	dbconfig "v1/util/db_config"
 	config "v1/util/route_config"
+	"v1/v1/handlers"
 	"v1/wb_router/routes"
 
 	"github.com/gorilla/mux"

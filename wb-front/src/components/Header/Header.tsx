@@ -4,6 +4,7 @@ import { Input, Avatar, Dropdown, type MenuProps } from "antd";
 import logo from "../../assets/logo.svg";
 import { KeyOutlined, LogoutOutlined, SkinOutlined, UserOutlined } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
+import { setAuthToken } from "../../utils/auth";
 
 const Header: React.FC = () => {
   const navigate = useNavigate(); 
@@ -17,6 +18,7 @@ const Header: React.FC = () => {
   };
 
   const handleLogout = () => {
+    setAuthToken(null);
     navigate("/login");
   };
 

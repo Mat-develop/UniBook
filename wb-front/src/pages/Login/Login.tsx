@@ -7,7 +7,8 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { setAuthToken } from "../../utils/auth";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -34,16 +35,16 @@ const Login: React.FC = () => {
         email: username,
         password: password
       },  {
-    headers: {
-      "Content-Type": "application/json",
-    },});
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       const token = response.data.token;
 
-      localStorage.setItem("authToken", token)
+      setAuthToken(token, remember);
       toast.success("Login successful!");
 
-      axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("authToken")}`;
       navigate("/home");
     } catch (error: any) {
     toast.error(error.response?.data?.message || "Login failed");

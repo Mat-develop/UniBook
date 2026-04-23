@@ -19,10 +19,10 @@ const (
 	findByEmailQuery    = "SELECT id, password FROM users WHERE email = ?"
 	followQuery         = "INSERT IGNORE INTO followers (user_id, follower_id) values(?, ?)"
 	unfollowQuery       = "DELETE FROM followers WHERE user_id = ? AND follower_id = ?"
-	findFollowersQuery  = `select u.id, u.nome, u.nick, u.image_url, u.created_at 
-	from users u inner join followers f on u.id  = f.follower_id where f.user_id = ?`
-	findFollowingQuery = `select u.id, u.nome, u.nick, u.image_url, u.created_at 
-	from users u inner join followers f on u.id  = f.user_id where u.follower_id = ?`
+	findFollowersQuery = `SELECT u.id, u.name, u.nick, u.image_url, u.created_at
+	FROM users u INNER JOIN followers f ON u.id = f.follower_id WHERE f.user_id = ?`
+	findFollowingQuery = `SELECT u.id, u.name, u.nick, u.image_url, u.created_at
+	FROM users u INNER JOIN followers f ON u.id = f.user_id WHERE f.follower_id = ?`
 )
 
 type UserRepository interface {

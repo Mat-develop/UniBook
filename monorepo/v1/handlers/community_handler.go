@@ -4,9 +4,14 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strconv"
+	"strings"
 	"v1/community/model"
 	"v1/community/service"
+	"v1/util/authentication"
 	"v1/util/response"
+
+	"github.com/gorilla/mux"
 )
 
 type CommunityHandler interface {
@@ -64,5 +69,47 @@ func (c *communityHandler) ListCommunities(w http.ResponseWriter, r *http.Reques
 }
 
 func (c *communityHandler) DeleteCommunity(w http.ResponseWriter, r *http.Request)       {}
-func (c *communityHandler) FollowCommunity(w http.ResponseWriter, r *http.Request)       {}
-func (c *communityHandler) GetCommunityFollowers(w http.ResponseWriter, r *http.Request) {}
+func (c *communityHandler) FollowCommunity(w http.ResponseWriter, r *http.Request) {
+	userID, err := authentication.ExtractUserId(r)
+	if err != nil {
+		response.Erro(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	params := mux.Vars(r)
+	communityID, err := strconv.ParseUint(params["communityId"], 10, 64)
+	if err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if strings.Contains(r.URL.Path, "/follow") {
+		err = c.service.Follow(userID, communityID)
+	} else {
+		err = c.service.Unfollow(userID, communityID)
+	}
+
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusNoContent, nil)
+}
+
+func (c *communityHandler) GetCommunityFollowers(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	communityID, err := strconv.ParseUint(params["communityId"], 10, 64)
+	if err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	followers, err := c.service.GetFollowers(communityID)
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, followers)
+}
