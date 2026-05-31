@@ -1,0 +1,74 @@
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
+
+.heading {
+  margin-bottom: 24px;
+
+  em {
+    font-style: normal;
+    color: #1890ff;
+  }
+}
+
+.section {
+  margin-bottom: 32px;
+}
+
+.count {
+  font-size: 14px;
+  font-weight: normal;
+  color: #888;
+  margin-left: 6px;
+}
+
+.communityList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.communityCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 8px;
+  padding: 14px 18px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.15s;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
+  }
+}
+
+.communityInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.communityDesc {
+  font-size: 13px;
+}
+
+.communityMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #888;
+  flex-shrink: 0;
+}

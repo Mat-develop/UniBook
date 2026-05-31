@@ -22,6 +22,7 @@ type CommunityHandler interface {
 	DeleteCommunity(w http.ResponseWriter, r *http.Request)
 	FollowCommunity(w http.ResponseWriter, r *http.Request)
 	GetCommunityFollowers(w http.ResponseWriter, r *http.Request)
+	GetJoinedCommunities(w http.ResponseWriter, r *http.Request)
 }
 
 type communityHandler struct {
@@ -55,7 +56,22 @@ func (c *communityHandler) CreateCommunity(w http.ResponseWriter, r *http.Reques
 
 }
 
-func (c *communityHandler) GetCommunityByID(w http.ResponseWriter, r *http.Request) {}
+func (c *communityHandler) GetCommunityByID(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	communityID, err := strconv.ParseUint(params["communityId"], 10, 64)
+	if err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	community, err := c.service.GetCommunityByID(communityID)
+	if err != nil {
+		response.Erro(w, http.StatusNotFound, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, community)
+}
 
 func (c *communityHandler) GetCommunityByName(w http.ResponseWriter, r *http.Request) {}
 func (c *communityHandler) ListCommunities(w http.ResponseWriter, r *http.Request) {
@@ -95,6 +111,22 @@ func (c *communityHandler) FollowCommunity(w http.ResponseWriter, r *http.Reques
 	}
 
 	response.JSON(w, http.StatusNoContent, nil)
+}
+
+func (c *communityHandler) GetJoinedCommunities(w http.ResponseWriter, r *http.Request) {
+	userID, err := authentication.ExtractUserId(r)
+	if err != nil {
+		response.Erro(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	ids, err := c.service.GetJoinedCommunities(userID)
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, ids)
 }
 
 func (c *communityHandler) GetCommunityFollowers(w http.ResponseWriter, r *http.Request) {

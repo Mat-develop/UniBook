@@ -5,4 +5,4 @@ CREATE TABLE IF NOT EXISTS community_followers (
     PRIMARY KEY (user_id, community_id),
     FOREIGN KEY (user_id)      REFERENCES users(id)      ON DELETE CASCADE,
     FOREIGN KEY (community_id) REFERENCES community(id)  ON DELETE CASCADE
-);
+) ENGINE=InnoDB;

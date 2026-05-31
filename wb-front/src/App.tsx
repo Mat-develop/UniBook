@@ -6,6 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import MainLayout from './components/Layout/Layout';
 import Feed from './components/Feed/Feed';
 import CommunityFeed from './components/Communities';
+import CommunityPage from './pages/CommunityPage';
+import SearchPage from './pages/SearchPage';
 import Login from './pages/Login/Login';
 import Register from './pages/Login/Register';
 import IndexPage from './pages/Index';
@@ -53,6 +55,8 @@ function App() {
         >
           <Route path="/home" element={<Feed />} />
           <Route path="/communities" element={<CommunityFeed />} />
+          <Route path="/c/:communityId" element={<CommunityPage />} />
+          <Route path="/search" element={<SearchPage />} />
           <Route path="/popular" element={<Feed />} />
           <Route path="/new" element={<Feed />} />
         </Route>

@@ -6,12 +6,13 @@ import (
 )
 
 const (
-	Communities             = "/c"
-	AllCommunities          = "/c/all"
-	CommunityByID           = "/c/{communityId}"
-	CommunityFollowByID     = "/c/{communityId}/follow"
-	CommunityUnfollowByID   = "/c/{communityId}/unfollow"
-	CommunityFollowersByID  = "/c/{communityId}/followers"
+	Communities            = "/c"
+	AllCommunities         = "/c/all"
+	JoinedCommunities      = "/c/joined"
+	CommunityByID          = "/c/{communityId}"
+	CommunityFollowByID    = "/c/{communityId}/follow"
+	CommunityUnfollowByID  = "/c/{communityId}/unfollow"
+	CommunityFollowersByID = "/c/{communityId}/followers"
 )
 
 func GetCommunitiesRoutes(c handlers.CommunityHandler) []Route {
@@ -26,6 +27,18 @@ func GetCommunitiesRoutes(c handlers.CommunityHandler) []Route {
 			URI:         AllCommunities,
 			Method:      http.MethodGet,
 			Function:    c.ListCommunities,
+			RequireAuth: true,
+		},
+		{
+			URI:         JoinedCommunities,
+			Method:      http.MethodGet,
+			Function:    c.GetJoinedCommunities,
+			RequireAuth: true,
+		},
+		{
+			URI:         CommunityByID,
+			Method:      http.MethodGet,
+			Function:    c.GetCommunityByID,
 			RequireAuth: true,
 		},
 		{

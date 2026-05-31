@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, Image, Button, Space, Typography } from 'antd';
-import { BookOutlined, BlockOutlined, TeamOutlined, UserAddOutlined, UserDeleteOutlined } from '@ant-design/icons';
+import { BlockOutlined, TeamOutlined, UserAddOutlined, UserDeleteOutlined } from '@ant-design/icons';
 import { toast } from 'react-toastify';
 import { followCommunity, unfollowCommunity } from '../../utils/api';
 import styles from './communityContainer.module.scss';
@@ -11,10 +12,12 @@ interface CommunityProps {
   about: string;
   img?: string;
   members: number;
+  initialFollowing?: boolean;
 }
 
-const CommunityContainer: React.FC<CommunityProps> = ({ id, name, about, img, members = 0 }) => {
-  const [isFollowing, setIsFollowing] = useState(false);
+const CommunityContainer: React.FC<CommunityProps> = ({ id, name, about, img, members = 0, initialFollowing = false }) => {
+  const navigate = useNavigate();
+  const [isFollowing, setIsFollowing] = useState(initialFollowing);
   const [memberCount, setMemberCount] = useState(members);
   const [loading, setLoading] = useState(false);
 
@@ -45,7 +48,13 @@ const CommunityContainer: React.FC<CommunityProps> = ({ id, name, about, img, me
             <Image src={img} alt={name} />
           </div>
         )}
-        <Typography.Title level={3}>c/{name}</Typography.Title>
+        <Typography.Title
+          level={3}
+          className={styles.communityName}
+          onClick={() => navigate(`/c/${id}`)}
+        >
+          c/{name}
+        </Typography.Title>
       </div>
 
       <div className={styles.content}>

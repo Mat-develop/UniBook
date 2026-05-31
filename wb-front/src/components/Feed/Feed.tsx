@@ -1,16 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { type Post } from "../../utils/api";
 import PostContainer from "../PostContainer";
-
-interface Post {
-  id: string;
-  title: string;
-  body: string;
-  communityName: string;
-  imageUrl?: string;
-  likes: number;
-  comments: number;
-}
 
 const Feed: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -35,24 +26,27 @@ const Feed: React.FC = () => {
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
-  
 
- return (
+  return (
     <div>
       {posts.map((post) => (
         <PostContainer
           key={post.id}
+          postId={post.id}
+          communityId={post.communityId}
           title={post.title}
           body={post.body}
           community={post.communityName}
           img={post.imageUrl}
           likes={post.likes}
-          comments={post.comments}
+          initialLiked={post.liked}
+          commentCount={post.commentCount}
+          tags={post.tags}
+          links={post.links}
         />
       ))}
     </div>
   );
 };
-
 
 export default Feed;

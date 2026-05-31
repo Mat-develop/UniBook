@@ -14,11 +14,13 @@ type CommunityService interface {
 	GetCommunityByID(id uint64) (model.Community, error)
 	GetCommunityByName(name string) (model.Community, error)
 	ListCommunities() ([]model.Community, error)
+	Search(q string) ([]model.Community, error)
 	Delete(id uint64) error
 
 	Follow(userID, communityID uint64) error
 	Unfollow(userID, communityID uint64) error
 	GetFollowers(communityID uint64) ([]userModel.User, error)
+	GetJoinedCommunities(userID uint64) ([]uint64, error)
 }
 
 type communityService struct {
@@ -53,6 +55,10 @@ func (s *communityService) ListCommunities() ([]model.Community, error) {
 	return s.repo.FindAll()
 }
 
+func (s *communityService) Search(q string) ([]model.Community, error) {
+	return s.repo.Search(q)
+}
+
 func (s *communityService) Delete(id uint64) error {
 	return s.repo.Delete(id)
 }
@@ -67,4 +73,8 @@ func (s *communityService) Unfollow(userID, communityID uint64) error {
 
 func (s *communityService) GetFollowers(communityID uint64) ([]userModel.User, error) {
 	return s.repo.FindFollowers(communityID)
+}
+
+func (s *communityService) GetJoinedCommunities(userID uint64) ([]uint64, error) {
+	return s.repo.FindJoinedByUser(userID)
 }

@@ -8,11 +8,14 @@ import (
 
 type PostService interface {
 	GetFeed(accontId uint64) ([]model.Post, error)
-	GetPosts(accountId uint64, communityId uint64) ([]model.Post, error)
+	GetPosts(accountId uint64, communityId uint64, viewerID uint64) ([]model.Post, error)
 	GetPostByName() []model.Post
+	SearchPosts(viewerID uint64, q string) ([]model.Post, error)
 	CreatePost(userId uint64, postBody model.PostDTO) error
 	UpdatePost(postID uint64, userID uint64, postBody model.PostDTO) error
 	DeletePost(postID uint64, userID uint64) error
+	LikePost(postID, userID uint64) (int32, error)
+	UnlikePost(postID, userID uint64) (int32, error)
 }
 
 type postService struct {
@@ -23,22 +26,11 @@ func NewPostService(postRepository repository.PostRepository) PostService {
 	return &postService{postRepository: postRepository}
 }
 
-func (p *postService) GetPosts(accountId uint64, communityId uint64) ([]model.Post, error) {
+func (p *postService) GetPosts(accountId uint64, communityId uint64, viewerID uint64) ([]model.Post, error) {
 	if accountId != 0 {
-		posts, err := p.postRepository.FindUserPosts(accountId)
-		if err != nil {
-			return nil, err
-		}
-
-		return posts, nil
+		return p.postRepository.FindUserPosts(viewerID, accountId)
 	}
-
-	posts, err := p.postRepository.FindCommunityPosts(communityId)
-	if err != nil {
-		return nil, err
-	}
-
-	return posts, nil
+	return p.postRepository.FindCommunityPosts(viewerID, communityId)
 }
 
 func (p *postService) CreatePost(userId uint64, postBody model.PostDTO) error {
@@ -85,4 +77,16 @@ func (p *postService) UpdatePost(postID uint64, userID uint64, postBody model.Po
 
 func (p *postService) DeletePost(postID uint64, userID uint64) error {
 	return p.postRepository.Delete(postID, userID)
+}
+
+func (p *postService) SearchPosts(viewerID uint64, q string) ([]model.Post, error) {
+	return p.postRepository.SearchByTitle(viewerID, q)
+}
+
+func (p *postService) LikePost(postID, userID uint64) (int32, error) {
+	return p.postRepository.LikePost(postID, userID)
+}
+
+func (p *postService) UnlikePost(postID, userID uint64) (int32, error) {
+	return p.postRepository.UnlikePost(postID, userID)
 }

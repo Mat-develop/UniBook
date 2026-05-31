@@ -16,13 +16,19 @@ type Post struct {
 	Body          string    `json:"body,omitempty"`
 	ImageUrl      string    `json:"imageUrl,omitempty"`
 	Likes         int32     `json:"likes"`
+	Liked         bool      `json:"liked"`
+	CommentCount  int32     `json:"commentCount"`
+	Tags          []string  `json:"tags"`
+	Links         []string  `json:"links"`
 	CreatedAt     time.Time `json:"createdAt"`
 }
 
 type PostDTO struct {
-	CommunityId int32  `json:"communityId"`
-	Title       string `json:"title"`
-	Body        string `json:"body"`
+	CommunityId int32    `json:"communityId"`
+	Title       string   `json:"title"`
+	Body        string   `json:"body"`
+	Tags        []string `json:"tags"`
+	Links       []string `json:"links"`
 }
 
 func (p *PostDTO) Prepare() error {

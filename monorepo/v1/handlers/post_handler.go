@@ -21,6 +21,8 @@ type PostHandler interface {
 	CreatePost(w http.ResponseWriter, r *http.Request)
 	UpdatePost(w http.ResponseWriter, r *http.Request)
 	DeletePost(w http.ResponseWriter, r *http.Request)
+	LikePost(w http.ResponseWriter, r *http.Request)
+	UnlikePost(w http.ResponseWriter, r *http.Request)
 }
 
 type postHandler struct {
@@ -32,21 +34,35 @@ func NewPostHandler(handlerService service.PostService) PostHandler {
 }
 
 func (p *postHandler) GetCommunityPosts(w http.ResponseWriter, r *http.Request) {
+	viewerID, err := authentication.ExtractUserId(r)
+	if err != nil {
+		response.Erro(w, http.StatusUnauthorized, err)
+		return
+	}
+
 	params := mux.Vars(r)
 	communityId, err := strconv.ParseUint(params["communityId"], 10, 64)
 	if err != nil {
 		response.Erro(w, http.StatusBadRequest, err)
+		return
 	}
 
-	posts, err := p.service.GetPosts(0, communityId)
+	posts, err := p.service.GetPosts(0, communityId, viewerID)
 	if err != nil {
-		response.Erro(w, http.StatusBadRequest, err)
+		response.Erro(w, http.StatusInternalServerError, err)
+		return
 	}
 
 	response.JSON(w, http.StatusOK, posts)
 }
 
 func (p *postHandler) GetUserPosts(w http.ResponseWriter, r *http.Request) {
+	viewerID, err := authentication.ExtractUserId(r)
+	if err != nil {
+		response.Erro(w, http.StatusUnauthorized, err)
+		return
+	}
+
 	params := mux.Vars(r)
 	userId, err := strconv.ParseUint(params["userId"], 10, 64)
 	if err != nil {
@@ -54,9 +70,9 @@ func (p *postHandler) GetUserPosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts, err := p.service.GetPosts(userId, 0)
+	posts, err := p.service.GetPosts(userId, 0, viewerID)
 	if err != nil {
-		response.Erro(w, http.StatusBadRequest, err)
+		response.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -104,4 +120,50 @@ func (p *postHandler) UpdatePost(w http.ResponseWriter, r *http.Request) {
 
 func (p *postHandler) DeletePost(w http.ResponseWriter, r *http.Request) {
 
+}
+
+func (p *postHandler) LikePost(w http.ResponseWriter, r *http.Request) {
+	userID, err := authentication.ExtractUserId(r)
+	if err != nil {
+		response.Erro(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	params := mux.Vars(r)
+	postID, err := strconv.ParseUint(params["id"], 10, 64)
+	if err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	likes, err := p.service.LikePost(postID, userID)
+	if err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, map[string]int32{"likes": likes})
+}
+
+func (p *postHandler) UnlikePost(w http.ResponseWriter, r *http.Request) {
+	userID, err := authentication.ExtractUserId(r)
+	if err != nil {
+		response.Erro(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	params := mux.Vars(r)
+	postID, err := strconv.ParseUint(params["id"], 10, 64)
+	if err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	likes, err := p.service.UnlikePost(postID, userID)
+	if err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, map[string]int32{"likes": likes})
 }

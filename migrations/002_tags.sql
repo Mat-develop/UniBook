@@ -1,0 +1,7 @@
+CREATE TABLE tags (
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    name       VARCHAR(50) NOT NULL UNIQUE,
+    created_by INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+);

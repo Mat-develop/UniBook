@@ -21,7 +21,7 @@ func GetPostRoutes(h handlers.PostHandler) []Route {
 			URI:         Post,
 			Method:      http.MethodPost,
 			Function:    h.CreatePost,
-			RequireAuth: false,
+			RequireAuth: true,
 		},
 		{
 			URI:         CommunityPost,
@@ -51,6 +51,18 @@ func GetPostRoutes(h handlers.PostHandler) []Route {
 			URI:         PostById,
 			Method:      http.MethodDelete,
 			Function:    h.DeletePost,
+			RequireAuth: true,
+		},
+		{
+			URI:         "/post/{id}/like",
+			Method:      http.MethodPost,
+			Function:    h.LikePost,
+			RequireAuth: true,
+		},
+		{
+			URI:         "/post/{id}/like",
+			Method:      http.MethodDelete,
+			Function:    h.UnlikePost,
 			RequireAuth: true,
 		},
 	}

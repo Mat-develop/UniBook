@@ -8,4 +8,5 @@ type Community struct {
 	Description string    `json:"description"`
 	ImageUrl    string    `json:"imageUrl"`
 	CreatedAt   time.Time `json:"createdAt"`
+	Members     uint64    `json:"members"`
 }

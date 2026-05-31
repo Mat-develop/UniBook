@@ -43,10 +43,20 @@ const Header: React.FC = () => {
     }
   ];
 
+  const handleSearch = (value: string) => {
+    const q = value.trim();
+    if (q) navigate(`/search?q=${encodeURIComponent(q)}`);
+  };
+
   return (
     <header className={styles.header}>
       <img src={logo} alt="Logo" className={styles.logo} />
-      <Input.Search placeholder="Search..." className={styles.search} />
+      <Input.Search
+        placeholder="Search communities or posts…"
+        className={styles.search}
+        onSearch={handleSearch}
+        allowClear
+      />
       <Dropdown menu={{items}} >
         <Avatar size={25} icon={<UserOutlined />} />
       </Dropdown>

@@ -1,3 +1,38 @@
-.communityContainer{
-    border: 2px solid rgba(0, 0, 0, 0.466);
+.communityContainer {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 16px;
+
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+
+    .imageContainer {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+  }
+
+  .communityName {
+    cursor: pointer;
+    margin: 0 !important;
+
+    &:hover {
+      color: #1890ff;
+    }
+  }
+
+  .content {
+    margin-bottom: 12px;
+  }
+
+  .footer {
+    border-top: 1px solid #f0f0f0;
+    padding-top: 12px;
+  }
 }

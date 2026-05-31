@@ -1,0 +1,34 @@
+.editorWrapper {
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus-within {
+    border-color: #1890ff;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+  }
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  background: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.separator {
+  width: 1px;
+  height: 16px;
+  background: #e0e0e0;
+  margin: 0 4px;
+}
+
+.linkChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}

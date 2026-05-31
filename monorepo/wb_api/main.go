@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	commentRepo "v1/comment/repository"
+	commentServ "v1/comment/service"
 	commuRepo "v1/community/repository"
 	commuServ "v1/community/service"
-
 	postRepo "v1/post/repository"
 	postServ "v1/post/service"
+	tagRepo "v1/tag/repository"
+	tagServ "v1/tag/service"
 	"v1/users/repository"
 	"v1/users/service"
 	util "v1/util/cors"
@@ -19,18 +22,6 @@ import (
 
 	"github.com/gorilla/mux"
 )
-
-// USED TO GENERATE THE KEY - very simple
-// func init() {
-// 	key := make([]byte, 64)
-
-// 	if _, err := rand.Read(key); err != nil {
-// 		log.Fatal(err)
-// 	}
-
-// 	stringBase64 := base64.StdEncoding.EncodeToString(key)
-// 	fmt.Println(stringBase64)
-// }
 
 func main() {
 	config.Load()
@@ -53,8 +44,18 @@ func main() {
 	communityService := commuServ.NewCommunityService(communityRepo)
 	communityHandler := handlers.NewCommunityHandler(communityService)
 
+	tagRepository := tagRepo.NewTagRepository(db)
+	tagService := tagServ.NewTagService(tagRepository)
+	tagHandler := handlers.NewTagHandler(tagService)
+
+	commentRepository := commentRepo.NewCommentRepository(db)
+	commentService := commentServ.NewCommentService(commentRepository)
+	commentHandler := handlers.NewCommentHandler(commentService)
+
+	searchHandler := handlers.NewSearchHandler(communityService, postService)
+
 	r := mux.NewRouter()
-	r = routes.Config(r, userHandler, postHandler, communityHandler)
+	r = routes.Config(r, userHandler, postHandler, communityHandler, tagHandler, commentHandler, searchHandler)
 	fmt.Println("Server has started")
 
 	handler := util.EnableCORS(r)
