@@ -1,22 +1,26 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./sideMenu.module.scss";
 import { Layout, Menu } from "antd";
-import { 
-  HomeOutlined, 
-  FireOutlined, 
-  ClockCircleOutlined, 
+import {
+  HomeOutlined,
+  FireOutlined,
+  ClockCircleOutlined,
   MenuFoldOutlined,
-  MenuUnfoldOutlined, 
+  MenuUnfoldOutlined,
   MergeOutlined
 } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const { Sider } = Layout;
 
-const SideMenu: React.FC = () => {
+interface SideMenuProps {
+  collapsed: boolean;
+  onCollapse: (v: boolean) => void;
+}
+
+const SideMenu: React.FC<SideMenuProps> = ({ collapsed, onCollapse }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [collapsed, setCollapsed] = useState(false);
 
   const items = [
     {
@@ -46,11 +50,12 @@ const SideMenu: React.FC = () => {
   ];
 
   return (
-    <Sider 
-      collapsible 
-      collapsed={collapsed} 
-      onCollapse={setCollapsed}
+    <Sider
+      collapsible
+      collapsed={collapsed}
+      onCollapse={onCollapse}
       trigger={null}
+      breakpoint="lg"
       className={styles.sideMenu}
     >
       <Menu
@@ -59,9 +64,9 @@ const SideMenu: React.FC = () => {
         selectedKeys={[location.pathname]}
         theme="dark"
       />
-      <div 
+      <div
         className={styles.trigger}
-        onClick={() => setCollapsed(!collapsed)}
+        onClick={() => onCollapse(!collapsed)}
       >
         {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
       </div>

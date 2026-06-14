@@ -19,6 +19,7 @@ type UserHandler interface {
 	CreateUser(w http.ResponseWriter, r *http.Request)
 	GetUser(w http.ResponseWriter, r *http.Request)
 	UpdateUser(w http.ResponseWriter, r *http.Request)
+	UpdateImage(w http.ResponseWriter, r *http.Request)
 	DeleteUser(w http.ResponseWriter, r *http.Request)
 	Follow(w http.ResponseWriter, r *http.Request)
 	Followers(w http.ResponseWriter, r *http.Request)
@@ -100,6 +101,42 @@ func (h *userHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	err = h.service.Update(userId, user, userToken)
 	if err != nil {
 		response.Erro(w, http.StatusForbidden, err)
+	}
+
+	response.JSON(w, http.StatusNoContent, nil)
+}
+
+func (h *userHandler) UpdateImage(w http.ResponseWriter, r *http.Request) {
+	userToken, err := authentication.ExtractUserId(r)
+	if err != nil {
+		response.Erro(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	params := mux.Vars(r)
+	userID, err := strconv.ParseUint(params["userId"], 10, 64)
+	if err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		response.Erro(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	var payload struct {
+		ImageData string `json:"imageData"`
+	}
+	if err = json.Unmarshal(body, &payload); err != nil || payload.ImageData == "" {
+		response.Erro(w, http.StatusBadRequest, errors.New("imageData is required"))
+		return
+	}
+
+	if err = h.service.UpdateImage(userID, userToken, payload.ImageData); err != nil {
+		response.Erro(w, http.StatusForbidden, err)
+		return
 	}
 
 	response.JSON(w, http.StatusNoContent, nil)

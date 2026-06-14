@@ -111,7 +111,19 @@ func (p *postHandler) CreatePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (p *postHandler) GetFeed(w http.ResponseWriter, r *http.Request) {
+	userID, err := authentication.ExtractUserId(r)
+	if err != nil {
+		response.Erro(w, http.StatusUnauthorized, err)
+		return
+	}
 
+	posts, err := p.service.GetFeed(userID)
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, posts)
 }
 
 func (p *postHandler) UpdatePost(w http.ResponseWriter, r *http.Request) {

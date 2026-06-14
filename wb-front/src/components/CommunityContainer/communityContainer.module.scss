@@ -1,13 +1,18 @@
 .communityContainer {
   width: 100%;
-  border-radius: 8px;
+  border-radius: 8px !important;
   margin-bottom: 16px;
+  transition: box-shadow 0.2s;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+  }
 
   .header {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 
     .imageContainer {
       width: 48px;
@@ -15,24 +20,41 @@
       border-radius: 50%;
       overflow: hidden;
       flex-shrink: 0;
+      background: #f0f0f0;
     }
   }
 
   .communityName {
     cursor: pointer;
     margin: 0 !important;
+    font-size: 16px !important;
+    transition: color 0.2s;
 
     &:hover {
-      color: #1890ff;
+      color: #1677ff;
     }
   }
 
   .content {
     margin-bottom: 12px;
+    color: rgba(0, 0, 0, 0.65);
+    font-size: 14px;
   }
 
   .footer {
     border-top: 1px solid #f0f0f0;
     padding-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .memberBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: #888;
   }
 }

@@ -126,16 +126,16 @@ const PostContainer: React.FC<PostProps> = ({
       </div>
 
       {links.length > 0 && (
-        <div className={styles.links}>
-          {links.map((url) => {
-            let host = url;
-            try { host = new URL(url).hostname; } catch {}
-            return (
-              <a key={url} href={url} target="_blank" rel="noopener noreferrer">
-                <Tag icon={<LinkOutlined />} color="geekblue">{host}</Tag>
-              </a>
-            );
-          })}
+        <div className={styles.references}>
+          <Typography.Text className={styles.referencesLabel}>
+            <LinkOutlined style={{ marginRight: 6 }} />Referências
+          </Typography.Text>
+          {links.map((url, index) => (
+            <div key={url} className={styles.referenceItem}>
+              <span className={styles.refIndex}>[{index + 1}]</span>
+              <a href={url} target="_blank" rel="noopener noreferrer">{url}</a>
+            </div>
+          ))}
         </div>
       )}
 
@@ -194,7 +194,7 @@ const PostContainer: React.FC<PostProps> = ({
                 ) : (
                   comments.map((c) => (
                     <div key={c.id} className={styles.commentItem}>
-                      <Typography.Text strong className={styles.commentNick}>{c.userNick}</Typography.Text>
+                      <Link to={`/profile/${c.userId}`} className={styles.commentNick}>{c.userNick}</Link>
                       <Typography.Text>{c.body}</Typography.Text>
                     </div>
                   ))

@@ -1,31 +1,28 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { type Post } from "../../utils/api";
+import { Typography, Spin } from "antd";
+import { getFeed, type Post } from "../../utils/api";
 import PostContainer from "../PostContainer";
+import styles from "./feed.module.scss";
 
 const Feed: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/post/c/1`);
-        setPosts(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to fetch posts');
-        setLoading(false);
-        console.error('Error fetching posts:', err);
-      }
-    };
-
-    fetchPosts();
+    getFeed()
+      .then(setPosts)
+      .catch(() => setError(true))
+      .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  if (loading) return <div className={styles.center}><Spin size="large" /></div>;
+  if (error) return <div className={styles.center}><Typography.Text type="danger">Erro ao carregar o feed.</Typography.Text></div>;
+  if (posts.length === 0) return (
+    <div className={styles.center}>
+      <Typography.Text type="secondary">Nenhum post ainda. Siga comunidades para ver posts aqui.</Typography.Text>
+    </div>
+  );
 
   return (
     <div>

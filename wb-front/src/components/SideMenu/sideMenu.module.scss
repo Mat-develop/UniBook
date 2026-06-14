@@ -3,7 +3,7 @@
   left: 0;
   top: 60px;
   height: calc(100vh - 60px);
-  z-index: 1;
+  z-index: 10;
 
   :global {
     .ant-layout-sider-children {
@@ -18,13 +18,21 @@
 }
 
 .trigger {
-  padding: 16px;
+  padding: 14px 16px;
   text-align: center;
-  color: #fff;
+  color: rgba(255, 255, 255, 0.65);
   cursor: pointer;
-  transition: color 0.3s;
+  transition: color 0.2s;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 16px;
 
   &:hover {
-    color: #1890ff;
+    color: #fff;
+  }
+}
+
+@media (max-width: 600px) {
+  .sideMenu {
+    display: none;
   }
 }

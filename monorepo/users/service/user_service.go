@@ -13,6 +13,7 @@ type UserService interface {
 	Get(nameOrNick string) ([]model.User, error)
 	Update(userID uint64, userModel *model.User, tokenID uint64) error
 	UpdatePassword(requestBody []byte, userID uint64, userToken uint64) error
+	UpdateImage(userID uint64, tokenID uint64, imageData string) error
 	Follow(userId uint64, followerID uint64, follow bool) error
 	Delete(userID uint64, tokenID uint64) error
 	GetFollowers(userID uint64, tokenID uint64, my bool) ([]model.User, error)
@@ -84,6 +85,13 @@ func (s *userService) GetFollowers(userID uint64, tokenID uint64, my bool) ([]mo
 	}
 
 	return s.repo.FindFollowing(userID)
+}
+
+func (s *userService) UpdateImage(userID uint64, tokenID uint64, imageData string) error {
+	if userID != tokenID {
+		return errors.New("account doesn't match")
+	}
+	return s.repo.UpdateImage(userID, imageData)
 }
 
 func (s *userService) UpdatePassword(requestBody []byte, userID uint64, userToken uint64) error {

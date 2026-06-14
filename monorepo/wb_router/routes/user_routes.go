@@ -71,5 +71,11 @@ func GetUserRoutes(h handlers.UserHandler) []Route {
 			Function:    h.UpdatePassword,
 			RequireAuth: true,
 		},
+		{
+			URI:         User + "/{userId}/image",
+			Method:      http.MethodPut,
+			Function:    h.UpdateImage,
+			RequireAuth: true,
+		},
 	}
 }

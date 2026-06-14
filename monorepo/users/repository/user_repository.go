@@ -15,6 +15,7 @@ const (
 	findPasswordById    = "SELECT password from users where id = ?"
 	updateQuery         = "UPDATE users SET name = ?, nick = ?, email = ? WHERE id = ?;"
 	updatePasswordQuery = "UPDATE users SET password = ? where id = ?;"
+	updateImageQuery    = "UPDATE users SET image_url = ? WHERE id = ?"
 	deleteQuery         = "DELETE FROM users WHERE id = ?;"
 	findByEmailQuery    = "SELECT id, password FROM users WHERE email = ?"
 	followQuery         = "INSERT IGNORE INTO followers (user_id, follower_id) values(?, ?)"
@@ -27,10 +28,11 @@ const (
 
 type UserRepository interface {
 	Create(user model.User) (uint64, error)
-	FindUserByName(userNameOrNick string) ([]model.User, error) // mudar para find by Name
+	FindUserByName(userNameOrNick string) ([]model.User, error)
 	FindUsers() ([]model.User, error)
 	Update(ID uint64, user model.User) error
 	UpdatePassword(ID uint64, password string) error
+	UpdateImage(ID uint64, imageData string) error
 	Delete(ID uint64) error
 	FindUserByEmail(email string) (model.User, error)
 	FindPasswordById(ID uint64) (string, error)
@@ -299,6 +301,11 @@ func (u *userRepository) FindFollowing(userId uint64) ([]model.User, error) {
 	}
 
 	return users, nil
+}
+
+func (u *userRepository) UpdateImage(ID uint64, imageData string) error {
+	_, err := u.db.Exec(updateImageQuery, imageData, ID)
+	return err
 }
 
 func (u *userRepository) UpdatePassword(ID uint64, password string) error {

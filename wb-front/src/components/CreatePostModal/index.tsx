@@ -106,12 +106,22 @@ const CreatePostModal: React.FC<Props> = ({ communityId, open, onClose, onSucces
     if (!body.trim()) { setBodyError(true); return; }
     setBodyError(false);
     setSubmitting(true);
+
+    let finalLinks = links;
+    const pendingUrl = linkInput.trim();
+    if (pendingUrl) {
+      try {
+        new URL(pendingUrl);
+        if (!finalLinks.includes(pendingUrl)) finalLinks = [...finalLinks, pendingUrl];
+      } catch {}
+    }
+
     try {
       await createPost({
         communityId,
         title: values.title.trim(),
         body: body.trim(),
-        links,
+        links: finalLinks,
         tags: values.tags ?? [],
       });
       toast.success('Post created!');

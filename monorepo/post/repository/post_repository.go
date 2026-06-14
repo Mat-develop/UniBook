@@ -43,9 +43,20 @@ const (
 	baseGroup = `
 		GROUP BY p.id, p.user_id, p.community_id, c.name, p.title, p.body, p.image_url, p.likes, p.created_at, u.nick`
 
+	feedJoins = `
+		FROM posts p
+		INNER JOIN users u ON u.id = p.user_id
+		INNER JOIN community c ON c.id = p.community_id
+		INNER JOIN community_followers cf ON cf.community_id = p.community_id AND cf.user_id = ?
+		LEFT JOIN post_tags pt ON pt.post_id = p.id
+		LEFT JOIN tags t ON t.id = pt.tag_id
+		LEFT JOIN post_likes pl ON pl.post_id = p.id AND pl.user_id = ?`
+
 	FindByCommunityIdQuery = "SELECT" + baseCols + baseJoins + " WHERE p.community_id = ?" + baseGroup
 	FindByUserIdQuery      = "SELECT" + baseCols + baseJoins + " WHERE p.user_id = ?" + baseGroup
 	SearchByTitleQuery     = "SELECT" + baseCols + baseJoins + " WHERE p.title LIKE ?" + baseGroup
+	FindFeedQuery          = "SELECT" + baseCols + feedJoins + baseGroup +
+		" ORDER BY ((p.likes + 1) / POW(TIMESTAMPDIFF(HOUR, p.created_at, NOW()) + 2, 1.8)) DESC LIMIT 50"
 
 	UpdateQuery = "UPDATE posts SET title = ?, body = ? WHERE id = ? AND user_id = ?"
 	DeleteQuery = "DELETE FROM posts WHERE id = ? AND user_id = ?"
@@ -54,6 +65,7 @@ const (
 type PostRepository interface {
 	FindCommunityPosts(viewerID, communityId uint64) ([]model.Post, error)
 	FindUserPosts(viewerID, userId uint64) ([]model.Post, error)
+	FindFeed(viewerID uint64) ([]model.Post, error)
 	FindPostByName() ([]model.Post, error)
 	SearchByTitle(viewerID uint64, q string) ([]model.Post, error)
 	Create(userId uint64, postBody model.PostDTO) error
@@ -138,6 +150,15 @@ func (p *postRepository) FindCommunityPosts(viewerID, communityId uint64) ([]mod
 
 func (p *postRepository) FindUserPosts(viewerID, userId uint64) ([]model.Post, error) {
 	rows, err := p.db.Query(FindByUserIdQuery, viewerID, userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	return p.scanPosts(rows)
+}
+
+func (p *postRepository) FindFeed(viewerID uint64) ([]model.Post, error) {
+	rows, err := p.db.Query(FindFeedQuery, viewerID, viewerID)
 	if err != nil {
 		return nil, err
 	}

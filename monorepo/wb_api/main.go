@@ -10,6 +10,8 @@ import (
 	commuServ "v1/community/service"
 	postRepo "v1/post/repository"
 	postServ "v1/post/service"
+	profileRepo "v1/profile/repository"
+	profileServ "v1/profile/service"
 	tagRepo "v1/tag/repository"
 	tagServ "v1/tag/service"
 	"v1/users/repository"
@@ -54,8 +56,12 @@ func main() {
 
 	searchHandler := handlers.NewSearchHandler(communityService, postService)
 
+	profileRepository := profileRepo.NewProfileRepository(db)
+	profileService := profileServ.NewProfileService(profileRepository)
+	profileHandler := handlers.NewProfileHandler(profileService)
+
 	r := mux.NewRouter()
-	r = routes.Config(r, userHandler, postHandler, communityHandler, tagHandler, commentHandler, searchHandler)
+	r = routes.Config(r, userHandler, postHandler, communityHandler, tagHandler, commentHandler, searchHandler, profileHandler)
 	fmt.Println("Server has started")
 
 	handler := util.EnableCORS(r)

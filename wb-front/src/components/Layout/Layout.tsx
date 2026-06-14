@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Layout } from 'antd';
 import styles from './layout.module.scss';
 import Header from '../Header/Header';
@@ -8,12 +8,14 @@ import { Outlet } from 'react-router-dom';
 const { Content } = Layout;
 
 const MainLayout: React.FC = () => {
+  const [collapsed, setCollapsed] = useState(false);
+
   return (
     <Layout className={styles.layout}>
       <Header />
       <Layout className={styles.mainLayout}>
-        <SideMenu />
-        <Content className={styles.content}>
+        <SideMenu collapsed={collapsed} onCollapse={setCollapsed} />
+        <Content className={`${styles.content} ${collapsed ? styles.contentCollapsed : ''}`}>
           <div className={styles.contentWrapper}>
             <Outlet />
           </div>

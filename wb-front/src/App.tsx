@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 import axios from 'axios';
+import { ConfigProvider } from 'antd';
+import ptBR from 'antd/locale/pt_BR';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -8,6 +10,7 @@ import Feed from './components/Feed/Feed';
 import CommunityFeed from './components/Communities';
 import CommunityPage from './pages/CommunityPage';
 import SearchPage from './pages/SearchPage';
+import ProfilePage from './pages/ProfilePage';
 import Login from './pages/Login/Login';
 import Register from './pages/Login/Register';
 import IndexPage from './pages/Index';
@@ -41,6 +44,16 @@ function App() {
   }, []);
 
   return (
+    <ConfigProvider
+      locale={ptBR}
+      theme={{
+        token: {
+          colorPrimary: '#1677ff',
+          borderRadius: 6,
+          fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+        },
+      }}
+    >
     <Router>
       <Routes>
         <Route path="/" element={<IndexPage />} />
@@ -57,6 +70,7 @@ function App() {
           <Route path="/communities" element={<CommunityFeed />} />
           <Route path="/c/:communityId" element={<CommunityPage />} />
           <Route path="/search" element={<SearchPage />} />
+          <Route path="/profile/:userId" element={<ProfilePage />} />
           <Route path="/popular" element={<Feed />} />
           <Route path="/new" element={<Feed />} />
         </Route>
@@ -74,6 +88,7 @@ function App() {
         theme="colored"
       />
     </Router>
+    </ConfigProvider>
   );
 }
 

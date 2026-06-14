@@ -1,0 +1,1 @@
+ALTER TABLE users MODIFY COLUMN image_url TEXT;

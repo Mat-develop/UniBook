@@ -17,7 +17,7 @@ type Route struct {
 
 // will hava to add login handler after
 // Puts all routes inside router
-func Config(r *mux.Router, userHandler handlers.UserHandler, postHandler handlers.PostHandler, communityHandler handlers.CommunityHandler, tagHandler handlers.TagHandler, commentHandler handlers.CommentHandler, searchHandler handlers.SearchHandler) *mux.Router {
+func Config(r *mux.Router, userHandler handlers.UserHandler, postHandler handlers.PostHandler, communityHandler handlers.CommunityHandler, tagHandler handlers.TagHandler, commentHandler handlers.CommentHandler, searchHandler handlers.SearchHandler, profileHandler handlers.ProfileHandler) *mux.Router {
 	routes := GetUserRoutes(userHandler)
 	routes = append(routes, routeLogin)
 	routes = append(routes, GetPostRoutes(postHandler)...)
@@ -25,6 +25,7 @@ func Config(r *mux.Router, userHandler handlers.UserHandler, postHandler handler
 	routes = append(routes, GetTagRoutes(tagHandler)...)
 	routes = append(routes, GetCommentRoutes(commentHandler)...)
 	routes = append(routes, GetSearchRoutes(searchHandler)...)
+	routes = append(routes, GetProfileRoutes(profileHandler)...)
 
 	for _, route := range routes {
 		if route.RequireAuth {

@@ -45,23 +45,8 @@ func (p *postService) CreatePost(userId uint64, postBody model.PostDTO) error {
 	return nil
 }
 
-func (p *postService) GetFeed(accountId uint64) ([]model.Post, error) {
-	// if accountId != 0 {
-	// 	posts, err := p.postRepository.FindUserPosts(accountId)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-
-	// 	return posts, nil
-	// }
-
-	// posts, err := p.postRepository.FindCommunityPosts(communityId)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// return posts, nil
-	return nil, nil
+func (p *postService) GetFeed(viewerID uint64) ([]model.Post, error) {
+	return p.postRepository.FindFeed(viewerID)
 }
 
 func (p *postService) GetPostByName() []model.Post {

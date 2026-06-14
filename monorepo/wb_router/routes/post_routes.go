@@ -18,6 +18,12 @@ const (
 func GetPostRoutes(h handlers.PostHandler) []Route {
 	return []Route{
 		{
+			URI:         "/feed",
+			Method:      http.MethodGet,
+			Function:    h.GetFeed,
+			RequireAuth: true,
+		},
+		{
 			URI:         Post,
 			Method:      http.MethodPost,
 			Function:    h.CreatePost,

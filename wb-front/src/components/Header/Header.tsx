@@ -1,20 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./header.module.scss";
 import { Input, Avatar, Dropdown, type MenuProps } from "antd";
 import logo from "../../assets/logo.svg";
 import { KeyOutlined, LogoutOutlined, SkinOutlined, UserOutlined } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
-import { setAuthToken } from "../../utils/auth";
+import { setAuthToken, getUserIdFromToken } from "../../utils/auth";
+import { getProfile } from "../../utils/api";
 
 const Header: React.FC = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+  const [avatarSrc, setAvatarSrc] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const userId = getUserIdFromToken();
+    if (userId) {
+      getProfile(userId)
+        .then((p) => { if (p.imageUrl) setAvatarSrc(p.imageUrl); })
+        .catch(() => {});
+    }
+  }, []);
 
   const handleChangePassword = () => {
-    navigate("/change-password"); 
+    navigate("/change-password");
   };
 
   const handleProfile = () => {
-    navigate("/profile");
+    const userId = getUserIdFromToken();
+    if (userId) navigate(`/profile/${userId}`);
   };
 
   const handleLogout = () => {
@@ -50,16 +62,27 @@ const Header: React.FC = () => {
 
   return (
     <header className={styles.header}>
-      <img src={logo} alt="Logo" className={styles.logo} />
-      <Input.Search
-        placeholder="Search communities or posts…"
-        className={styles.search}
-        onSearch={handleSearch}
-        allowClear
-      />
-      <Dropdown menu={{items}} >
-        <Avatar size={25} icon={<UserOutlined />} />
-      </Dropdown>
+      <div className={styles.logoArea}>
+        <img src={logo} alt="UniBook" className={styles.logo} />
+      </div>
+      <div className={styles.searchWrapper}>
+        <Input.Search
+          placeholder="Buscar comunidades ou posts…"
+          className={styles.search}
+          onSearch={handleSearch}
+          allowClear
+        />
+      </div>
+      <div className={styles.right}>
+        <Dropdown menu={{ items }}>
+          <Avatar
+            size={38}
+            src={avatarSrc}
+            icon={<UserOutlined />}
+            style={{ cursor: 'pointer', backgroundColor: '#1677ff' }}
+          />
+        </Dropdown>
+      </div>
     </header>
   );
 };
