@@ -23,7 +23,7 @@ const Register: React.FC = () => {
    setLoading(true);
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/users`,{
+      await axios.post(`${import.meta.env.VITE_API_URL}/users`,{
         name: name,
         nick: username,
         email: email,
