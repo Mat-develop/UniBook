@@ -34,9 +34,12 @@ func Load() {
 	}
 
 	var err error
-	Port, err = strconv.Atoi(os.Getenv("API_PORT"))
-	if err != nil {
-		Port = 9000
+	Port, err = strconv.Atoi(os.Getenv("PORT"))
+	if err != nil || Port == 0 {
+		Port, err = strconv.Atoi(os.Getenv("API_PORT"))
+		if err != nil || Port == 0 {
+			Port = 9000
+		}
 	}
 
 	ConnectionString = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
