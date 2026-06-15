@@ -161,7 +161,6 @@ const PostContainer: React.FC<PostProps> = ({
             type={liked ? 'primary' : 'default'}
             loading={likeLoading}
             onClick={handleLike}
-            size="small"
           >
             {liked ? 'Unlike' : 'Like'}
           </Button>
@@ -176,7 +175,6 @@ const PostContainer: React.FC<PostProps> = ({
           icon={<CommentOutlined />}
           type={commentsOpen ? 'primary' : 'default'}
           onClick={handleToggleComments}
-          size="small"
         >
           {commentsLoaded ? comments.length : commentCount} Comments
         </Button>

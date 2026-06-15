@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
 import styles from "./header.module.scss";
 import { Input, Avatar, Dropdown, type MenuProps } from "antd";
+import { MenuOutlined, KeyOutlined, LogoutOutlined, SkinOutlined, UserOutlined } from '@ant-design/icons';
 import logo from "../../assets/logo.svg";
-import { KeyOutlined, LogoutOutlined, SkinOutlined, UserOutlined } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
 import { setAuthToken, getUserIdFromToken } from "../../utils/auth";
 import { getProfile } from "../../utils/api";
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onMobileMenu?: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onMobileMenu }) => {
   const navigate = useNavigate();
   const [avatarSrc, setAvatarSrc] = useState<string | undefined>(undefined);
 
@@ -62,6 +66,9 @@ const Header: React.FC = () => {
 
   return (
     <header className={styles.header}>
+      <button className={styles.hamburger} onClick={onMobileMenu} aria-label="Abrir menu">
+        <MenuOutlined />
+      </button>
       <div className={styles.logoArea}>
         <img src={logo} alt="UniBook" className={styles.logo} />
       </div>

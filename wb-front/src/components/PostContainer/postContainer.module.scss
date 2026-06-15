@@ -166,4 +166,14 @@
     display: flex;
     gap: 8px;
   }
+
+  @media (max-width: 480px) {
+    .footer {
+      gap: 8px;
+    }
+
+    .commentForm {
+      flex-direction: column;
+    }
+  }
 }

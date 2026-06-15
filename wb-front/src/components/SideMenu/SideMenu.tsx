@@ -56,6 +56,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ collapsed, onCollapse }) => {
       onCollapse={onCollapse}
       trigger={null}
       breakpoint="lg"
+      width={240}
       className={styles.sideMenu}
     >
       <Menu

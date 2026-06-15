@@ -2,16 +2,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import CommunityContainer from "../CommunityContainer";
 import CreateCommunityModal from "../CreateCommunityModal";
-import { getJoinedCommunities } from "../../utils/api";
+import { getJoinedCommunities, type Community } from "../../utils/api";
 import styles from './communities.module.scss';
-
-interface Community {
-  id: number;
-  name: string;
-  description: string;
-  img?: string;
-  members: number;
-}
 
 const CommunityFeed: React.FC = () => {
   const [communities, setCommunities] = useState<Community[]>([]);
@@ -23,7 +15,7 @@ const CommunityFeed: React.FC = () => {
     const fetchData = async () => {
       try {
         const [communitiesRes, joined] = await Promise.all([
-          axios.get(`${import.meta.env.VITE_API_URL}/c/all`),
+          axios.get<Community[]>(`${import.meta.env.VITE_API_URL}/c/all`),
           getJoinedCommunities(),
         ]);
         setCommunities(communitiesRes.data);
@@ -44,7 +36,7 @@ const CommunityFeed: React.FC = () => {
 
   const reload = async () => {
     const [commRes, joined] = await Promise.all([
-      axios.get(`${import.meta.env.VITE_API_URL}/c/all`),
+      axios.get<Community[]>(`${import.meta.env.VITE_API_URL}/c/all`),
       getJoinedCommunities(),
     ]);
     setCommunities(commRes.data);
@@ -62,7 +54,7 @@ const CommunityFeed: React.FC = () => {
           id={community.id}
           name={community.name}
           about={community.description}
-          img={community.img}
+          img={community.imageUrl}
           members={community.members ?? 0}
           initialFollowing={joinedIds.has(community.id)}
         />
