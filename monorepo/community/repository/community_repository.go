@@ -9,7 +9,11 @@ import (
 )
 
 const (
-	createCommunityQuery   = "INSERT INTO community (name, description, image_url) VALUES (?, ?, ?)"
+	createCommunityQuery   = "INSERT INTO community (name, description, image_url, created_by) VALUES (?, ?, ?, ?)"
+	findByCreatorQuery     = `SELECT c.id, c.name, c.description, c.image_url, c.created_at, COUNT(cf.user_id) AS members
+	FROM community c LEFT JOIN community_followers cf ON c.id = cf.community_id
+	WHERE c.created_by = ?
+	GROUP BY c.id, c.name, c.description, c.image_url, c.created_at`
 	findCommunityByID = `SELECT c.id, c.name, c.description, c.image_url, c.created_at, COUNT(cf.user_id) AS members
 	FROM community c LEFT JOIN community_followers cf ON c.id = cf.community_id
 	WHERE c.id = ?
@@ -34,6 +38,7 @@ type CommunityRepository interface {
 	FindByID(id uint64) (model.Community, error)
 	FindByName(name string) (model.Community, error)
 	FindAll() ([]model.Community, error)
+	FindByCreator(userID uint64) ([]model.Community, error)
 	Search(q string) ([]model.Community, error)
 	Delete(id uint64) error
 
@@ -58,7 +63,7 @@ func (r *communityRepository) Create(community model.Community) (uint64, error) 
 	}
 	defer stmt.Close()
 
-	res, err := stmt.Exec(community.Name, community.Description, community.ImageUrl)
+	res, err := stmt.Exec(community.Name, community.Description, community.ImageUrl, community.CreatedBy)
 	if err != nil {
 		return 0, err
 	}
@@ -67,6 +72,24 @@ func (r *communityRepository) Create(community model.Community) (uint64, error) 
 		return 0, err
 	}
 	return uint64(lastID), nil
+}
+
+func (r *communityRepository) FindByCreator(userID uint64) ([]model.Community, error) {
+	rows, err := r.db.Query(findByCreatorQuery, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	communities := []model.Community{}
+	for rows.Next() {
+		var c model.Community
+		if err := rows.Scan(&c.Id, &c.Name, &c.Description, &c.ImageUrl, &c.CreatedAt, &c.Members); err != nil {
+			return nil, err
+		}
+		communities = append(communities, c)
+	}
+	return communities, nil
 }
 
 func (r *communityRepository) FindByID(id uint64) (model.Community, error) {

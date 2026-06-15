@@ -44,6 +44,18 @@ export const getCommunityPosts = (communityId: number) =>
 export const getFeed = (): Promise<Post[]> =>
   axios.get(`${BASE}/feed`).then((r) => r.data ?? []);
 
+export interface CommunityInput {
+  name: string;
+  description: string;
+  imageUrl?: string;
+}
+
+export const createCommunity = (data: CommunityInput): Promise<{ id: number }> =>
+  axios.post(`${BASE}/c/create`, data).then((r) => r.data);
+
+export const getCreatedCommunities = (userId: number): Promise<Community[]> =>
+  axios.get(`${BASE}/users/${userId}/communities`).then((r) => r.data ?? []);
+
 export const search = (q: string): Promise<SearchResult> =>
   axios.get(`${BASE}/search`, { params: { q } }).then((r) => r.data);
 

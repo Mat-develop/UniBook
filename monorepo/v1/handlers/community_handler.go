@@ -23,6 +23,7 @@ type CommunityHandler interface {
 	FollowCommunity(w http.ResponseWriter, r *http.Request)
 	GetCommunityFollowers(w http.ResponseWriter, r *http.Request)
 	GetJoinedCommunities(w http.ResponseWriter, r *http.Request)
+	GetCreatedCommunities(w http.ResponseWriter, r *http.Request)
 }
 
 type communityHandler struct {
@@ -34,6 +35,12 @@ func NewCommunityHandler(service service.CommunityService) CommunityHandler {
 }
 
 func (c *communityHandler) CreateCommunity(w http.ResponseWriter, r *http.Request) {
+	userID, err := authentication.ExtractUserId(r)
+	if err != nil {
+		response.Erro(w, http.StatusUnauthorized, err)
+		return
+	}
+
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		response.Erro(w, http.StatusUnprocessableEntity, err)
@@ -46,14 +53,32 @@ func (c *communityHandler) CreateCommunity(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
+	community.CreatedBy = userID
+
 	id, err := c.service.Create(community)
 	if err != nil {
 		response.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	response.JSON(w, http.StatusAccepted, id)
+	response.JSON(w, http.StatusCreated, map[string]uint64{"id": id})
+}
 
+func (c *communityHandler) GetCreatedCommunities(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userID, err := strconv.ParseUint(params["userId"], 10, 64)
+	if err != nil {
+		response.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	communities, err := c.service.GetCreatedCommunities(userID)
+	if err != nil {
+		response.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, communities)
 }
 
 func (c *communityHandler) GetCommunityByID(w http.ResponseWriter, r *http.Request) {

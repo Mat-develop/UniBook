@@ -47,7 +47,7 @@ const Login: React.FC = () => {
 
       navigate("/home");
     } catch (error: any) {
-    toast.error(error.response?.data?.message || "Login failed");
+    toast.error(error.response?.data?.erro || "Email ou senha incorretos.");
     } finally {
       setLoading(false);
     } 
@@ -67,7 +67,7 @@ const Login: React.FC = () => {
       <form className={styles.form} onSubmit={handleSubmit}>
         <h2>Login</h2>
         <Input
-          placeholder="Username"
+          placeholder="Email"
           prefix={<UserOutlined />}
           value={username}
           onChange={(e) => setUsername(e.target.value)}

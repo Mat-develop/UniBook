@@ -14,6 +14,7 @@ type CommunityService interface {
 	GetCommunityByID(id uint64) (model.Community, error)
 	GetCommunityByName(name string) (model.Community, error)
 	ListCommunities() ([]model.Community, error)
+	GetCreatedCommunities(userID uint64) ([]model.Community, error)
 	Search(q string) ([]model.Community, error)
 	Delete(id uint64) error
 
@@ -77,4 +78,8 @@ func (s *communityService) GetFollowers(communityID uint64) ([]userModel.User, e
 
 func (s *communityService) GetJoinedCommunities(userID uint64) ([]uint64, error) {
 	return s.repo.FindJoinedByUser(userID)
+}
+
+func (s *communityService) GetCreatedCommunities(userID uint64) ([]model.Community, error) {
+	return s.repo.FindByCreator(userID)
 }

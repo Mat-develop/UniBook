@@ -9,4 +9,5 @@ type Community struct {
 	ImageUrl    string    `json:"imageUrl"`
 	CreatedAt   time.Time `json:"createdAt"`
 	Members     uint64    `json:"members"`
+	CreatedBy   uint64    `json:"createdBy,omitempty"`
 }

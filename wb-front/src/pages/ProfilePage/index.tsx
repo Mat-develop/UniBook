@@ -6,15 +6,15 @@ import {
 } from 'antd';
 import {
   DeleteOutlined, EditOutlined, LinkOutlined,
-  PlusOutlined, UserOutlined,
+  PlusOutlined, TeamOutlined, UserOutlined,
 } from '@ant-design/icons';
 import { toast } from 'react-toastify';
 import {
   getProfile, addEducation, updateEducation, deleteEducation,
   addProject, updateProject, deleteProject,
   addCourse, updateCourse, deleteCourse,
-  updateUserImage,
-  type UserProfile, type Education, type Project, type Course,
+  updateUserImage, getCreatedCommunities,
+  type UserProfile, type Education, type Project, type Course, type Community,
 } from '../../utils/api';
 import { getUserIdFromToken } from '../../utils/auth';
 import styles from './profilePage.module.scss';
@@ -49,9 +49,10 @@ export default function ProfilePage() {
   const myId = getUserIdFromToken();
   const isOwner = myId === uid;
 
-  const [profile, setProfile]       = useState<UserProfile | null>(null);
-  const [loading, setLoading]       = useState(true);
+  const [profile, setProfile]           = useState<UserProfile | null>(null);
+  const [loading, setLoading]           = useState(true);
   const [imgUploading, setImgUploading] = useState(false);
+  const [createdCommunities, setCreatedCommunities] = useState<Community[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Education modal state
@@ -87,8 +88,14 @@ export default function ProfilePage() {
   };
 
   useEffect(() => {
-    getProfile(uid)
-      .then(setProfile)
+    Promise.all([
+      getProfile(uid),
+      getCreatedCommunities(uid),
+    ])
+      .then(([prof, comms]) => {
+        setProfile(prof);
+        setCreatedCommunities(comms);
+      })
       .catch(() => toast.error('Perfil não encontrado'))
       .finally(() => setLoading(false));
   }, [uid]);
@@ -285,6 +292,31 @@ export default function ProfilePage() {
 
         </Col>
       </Row>
+
+      {/* ── Comunidades Criadas ────────────────────────────────────────────── */}
+      {createdCommunities.length > 0 && (
+        <Row gutter={20} className={styles.body}>
+          <Col xs={24}>
+            <Card
+              title={<span><TeamOutlined /> Comunidades Criadas</span>}
+              className={styles.card}
+            >
+              <div className={styles.courseGrid}>
+                {createdCommunities.map((c) => (
+                  <div key={c.id} className={styles.courseItem}>
+                    {c.imageUrl && (
+                      <img src={c.imageUrl} alt={c.name} style={{ width: 40, height: 40, borderRadius: 8, marginBottom: 6, objectFit: 'cover' }} />
+                    )}
+                    <Text strong>{c.name}</Text>
+                    <br />
+                    <Text type="secondary" style={{ fontSize: 12 }}>{c.description}</Text>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </Col>
+        </Row>
+      )}
 
       {/* ── Modal: Formação ────────────────────────────────────────────────── */}
       <Modal

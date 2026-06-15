@@ -6,22 +6,30 @@ import (
 )
 
 const (
-	Communities            = "/c"
-	AllCommunities         = "/c/all"
-	JoinedCommunities      = "/c/joined"
-	CommunityByID          = "/c/{communityId}"
-	CommunityFollowByID    = "/c/{communityId}/follow"
-	CommunityUnfollowByID  = "/c/{communityId}/unfollow"
-	CommunityFollowersByID = "/c/{communityId}/followers"
+	Communities              = "/c"
+	CreateCommunity          = "/c/create"
+	AllCommunities           = "/c/all"
+	JoinedCommunities        = "/c/joined"
+	CommunityByID            = "/c/{communityId}"
+	CommunityFollowByID      = "/c/{communityId}/follow"
+	CommunityUnfollowByID    = "/c/{communityId}/unfollow"
+	CommunityFollowersByID   = "/c/{communityId}/followers"
+	CommunitiesByCreator     = "/users/{userId}/communities"
 )
 
 func GetCommunitiesRoutes(c handlers.CommunityHandler) []Route {
 	return []Route{
 		{
-			URI:         Communities,
+			URI:         CreateCommunity,
 			Method:      http.MethodPost,
-			Function:    c.GetCommunityByName,
-			RequireAuth: false,
+			Function:    c.CreateCommunity,
+			RequireAuth: true,
+		},
+		{
+			URI:         CommunitiesByCreator,
+			Method:      http.MethodGet,
+			Function:    c.GetCreatedCommunities,
+			RequireAuth: true,
 		},
 		{
 			URI:         AllCommunities,

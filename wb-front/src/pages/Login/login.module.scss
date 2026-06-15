@@ -1,12 +1,14 @@
 .mainContainer {
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 20px;
+  padding: 16px;
+  box-sizing: border-box;
 
-  background: 
+  background:
     linear-gradient(
       rgba(211, 127, 32, 0.4),
       rgba(0, 0, 0, 0.6)
@@ -20,19 +22,20 @@
   justify-content: start;
   align-items: center;
   background-color: #fff;
-  width: 400px; 
+  width: 400px;
+  max-width: 100%;
   padding: 20px;
   color: #130303;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   border-radius: 8px;
-  text-align: center; 
+  text-align: center;
   min-height: 300px;
 
-  img{
+  img {
     margin-top: 10px;
   }
 
-  p{
+  p {
     font-size: 20px;
   }
 }
@@ -47,7 +50,8 @@
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   border-radius: 8px;
   text-align: center;
-  width: 400px; 
+  width: 400px;
+  max-width: 100%;
   min-height: 300px;
 }
 
@@ -73,16 +77,69 @@
     width: 100%;
     font-weight: 500;
   }
-
-
 }
-  .register{
+
+.register {
+  margin-top: 5px !important;
+  width: 80%;
+  border-top: 1px solid #f0f0f0;
+
+  .goToReg {
     margin-top: 5px !important;
-    width: 80%;
-    border-top: 1px solid #f0f0f0;
-    .goToReg{
-      margin-top: 5px !important;
-      width: 100%;
+    width: 100%;
+  }
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  .mainContainer {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .aboutContainer {
+    width: 100%;
+    max-width: 440px;
+    min-height: unset;
+
+    p {
+      font-size: 16px;
     }
   }
 
+  .loginContainer {
+    width: 100%;
+    max-width: 440px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mainContainer {
+    padding: 12px;
+    justify-content: flex-start;
+    padding-top: 24px;
+  }
+
+  .aboutContainer {
+    display: none;
+  }
+
+  .loginContainer {
+    width: 100%;
+    border-radius: 12px;
+  }
+
+  .form {
+    width: 88%;
+    gap: 12px;
+
+    h2 {
+      font-size: 24px;
+    }
+  }
+
+  .register {
+    width: 88%;
+  }
+}

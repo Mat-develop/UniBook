@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import CommunityContainer from "../CommunityContainer";
+import CreateCommunityModal from "../CreateCommunityModal";
 import { getJoinedCommunities } from "../../utils/api";
 import styles from './communities.module.scss';
 
@@ -41,8 +42,20 @@ const CommunityFeed: React.FC = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
+  const reload = async () => {
+    const [commRes, joined] = await Promise.all([
+      axios.get(`${import.meta.env.VITE_API_URL}/c/all`),
+      getJoinedCommunities(),
+    ]);
+    setCommunities(commRes.data);
+    setJoinedIds(new Set(joined));
+  };
+
   return (
     <div className={styles.communitiesPage}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
+        <CreateCommunityModal onCreated={reload} />
+      </div>
       {communities.map((community) => (
         <CommunityContainer
           key={community.id}
